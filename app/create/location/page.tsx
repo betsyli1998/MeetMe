@@ -39,23 +39,33 @@ export default function CreateEventStep3() {
 
   // Load Google Maps script
   useEffect(() => {
-    const loadGoogleMaps = async () => {
-      if (typeof window === 'undefined') return;
-      if (window.google) return;
+    if (typeof window === 'undefined') return;
 
-      const script = document.createElement('script');
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places`;
-      script.async = true;
-      script.defer = true;
-      document.head.appendChild(script);
+    // Check if script already exists in DOM (more robust check)
+    const existingScript = document.querySelector(
+      'script[src*="maps.googleapis.com/maps/api"]'
+    );
+    if (existingScript || window.google) return;
+
+    const script = document.createElement('script');
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places`;
+    script.async = true;
+    script.defer = true;
+
+    // Add onload handler to trigger autocomplete initialization
+    script.onload = () => {
+      // Trigger a state update to re-run autocomplete initialization
+      setAutocompleteService(null);
     };
-    loadGoogleMaps();
+
+    document.head.appendChild(script);
   }, []);
 
   // Initialize Autocomplete
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    if (!window.google || autocompleteService) return;
+    if (!window.google) return;  // Wait for Google Maps to load
+    if (autocompleteService) return;  // Already initialized
 
     const input = document.getElementById('location') as HTMLInputElement;
     if (!input) return;
@@ -151,7 +161,7 @@ export default function CreateEventStep3() {
       <div className="bg-white rounded-lg shadow-md p-8">
         <div className="mb-6">
           <h2 className="text-2xl font-semibold mb-2">Where will your event be?</h2>
-          <p className="text-gray-600">Enter a location or let us suggest venues for you</p>
+          <p className="text-gray-600">Enter a location or let us give you some suggestions!</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">

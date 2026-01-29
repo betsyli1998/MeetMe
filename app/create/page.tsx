@@ -37,31 +37,37 @@ export default function CreateEventStep1() {
       <div className="bg-white rounded-lg shadow-md p-8">
         <h2 className="text-2xl font-semibold mb-6">What's your event idea?</h2>
 
-        <div className="bg-purple-50 border border-purple-200 rounded-lg p-6 mb-6">
-          <div className="text-center">
-            <div className="text-lg text-gray-700 flex items-center justify-center gap-2">
-              <span className="font-medium">I want to</span>
-              <div className="relative h-8 w-80 overflow-hidden">
-                <div className="animate-scroll-text">
-                  <div className="h-8 flex items-center font-semibold bg-gradient-to-r from-[#9a5ded] via-[#b67ef2] to-[#9a5ded] bg-clip-text text-transparent">
+        <div className="mb-6 flex flex-col items-center gap-3">
+          <div className="text-2xl text-gray-700 flex items-center gap-3 w-full max-w-fit">
+            <span className="font-medium">I want to</span>
+            <div className="relative h-10 w-96 overflow-hidden">
+              <div className="animate-scroll-text">
+                <div className="h-10 flex items-center font-semibold">
+                  <span className="inline-block bg-gradient-to-r from-[#7c48c4] via-[#9a5ded] via-[#b67ef2] via-[#d896ff] to-[#9a5ded] bg-clip-text text-transparent whitespace-nowrap">
                     host a galentines at a park
-                  </div>
-                  <div className="h-8 flex items-center font-semibold bg-gradient-to-r from-[#9a5ded] via-[#b67ef2] to-[#9a5ded] bg-clip-text text-transparent">
+                  </span>
+                </div>
+                <div className="h-10 flex items-center font-semibold">
+                  <span className="inline-block bg-gradient-to-r from-[#7c48c4] via-[#9a5ded] via-[#b67ef2] via-[#d896ff] to-[#9a5ded] bg-clip-text text-transparent whitespace-nowrap">
                     throw a summer party
-                  </div>
-                  <div className="h-8 flex items-center font-semibold bg-gradient-to-r from-[#9a5ded] via-[#b67ef2] to-[#9a5ded] bg-clip-text text-transparent">
+                  </span>
+                </div>
+                <div className="h-10 flex items-center font-semibold">
+                  <span className="inline-block bg-gradient-to-r from-[#7c48c4] via-[#9a5ded] via-[#b67ef2] via-[#d896ff] to-[#9a5ded] bg-clip-text text-transparent whitespace-nowrap">
                     host a board game night
-                  </div>
-                  <div className="h-8 flex items-center font-semibold bg-gradient-to-r from-[#9a5ded] via-[#b67ef2] to-[#9a5ded] bg-clip-text text-transparent">
+                  </span>
+                </div>
+                <div className="h-10 flex items-center font-semibold">
+                  <span className="inline-block bg-gradient-to-r from-[#7c48c4] via-[#9a5ded] via-[#b67ef2] via-[#d896ff] to-[#9a5ded] bg-clip-text text-transparent whitespace-nowrap">
                     organize a birthday celebration
-                  </div>
+                  </span>
                 </div>
               </div>
             </div>
-            <p className="text-sm text-gray-600 mt-3">
-              ✨ Type what you want to plan to get started!
-            </p>
           </div>
+          <p className="text-sm text-gray-600 w-full max-w-fit">
+            ✨ Type what you want to plan and get started!
+          </p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
