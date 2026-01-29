@@ -35,10 +35,34 @@ export default function CreateEventStep1() {
       </div>
 
       <div className="bg-white rounded-lg shadow-md p-8">
-        <h2 className="text-2xl font-semibold mb-4">What's your event idea?</h2>
-        <p className="text-gray-600 mb-6">
-          Don't worry about the details yet—just share your vague idea. Our AI will help you fill in the rest!
-        </p>
+        <h2 className="text-2xl font-semibold mb-6">What's your event idea?</h2>
+
+        <div className="bg-purple-50 border border-purple-200 rounded-lg p-6 mb-6">
+          <div className="text-center">
+            <div className="text-lg text-gray-700 flex items-center justify-center gap-2">
+              <span className="font-medium">I want to</span>
+              <div className="relative h-8 w-80 overflow-hidden">
+                <div className="animate-scroll-text">
+                  <div className="h-8 flex items-center font-semibold bg-gradient-to-r from-[#9a5ded] via-[#b67ef2] to-[#9a5ded] bg-clip-text text-transparent">
+                    host a galentines at a park
+                  </div>
+                  <div className="h-8 flex items-center font-semibold bg-gradient-to-r from-[#9a5ded] via-[#b67ef2] to-[#9a5ded] bg-clip-text text-transparent">
+                    throw a summer party
+                  </div>
+                  <div className="h-8 flex items-center font-semibold bg-gradient-to-r from-[#9a5ded] via-[#b67ef2] to-[#9a5ded] bg-clip-text text-transparent">
+                    host a board game night
+                  </div>
+                  <div className="h-8 flex items-center font-semibold bg-gradient-to-r from-[#9a5ded] via-[#b67ef2] to-[#9a5ded] bg-clip-text text-transparent">
+                    organize a birthday celebration
+                  </div>
+                </div>
+              </div>
+            </div>
+            <p className="text-sm text-gray-600 mt-3">
+              ✨ Type what you want to plan to get started!
+            </p>
+          </div>
+        </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
@@ -54,33 +78,6 @@ export default function CreateEventStep1() {
               className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
               placeholder="e.g., My gothic birthday party, Casual team event, Elegant dinner..."
             />
-          </div>
-
-          <div className="bg-purple-50 border border-purple-200 rounded-lg p-6 mb-4">
-            <div className="text-center">
-              <div className="text-lg text-gray-700 flex items-center justify-center gap-2">
-                <span className="font-medium">I want to</span>
-                <div className="relative h-8 w-80 overflow-hidden">
-                  <div className="animate-scroll-text">
-                    <div className="h-8 flex items-center text-primary font-semibold">
-                      host a galentines at a park
-                    </div>
-                    <div className="h-8 flex items-center text-primary font-semibold">
-                      throw a summer party
-                    </div>
-                    <div className="h-8 flex items-center text-primary font-semibold">
-                      host a board game night
-                    </div>
-                    <div className="h-8 flex items-center text-primary font-semibold">
-                      organize a birthday celebration
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <p className="text-sm text-gray-600 mt-3">
-                ✨ Type your idea above to get started
-              </p>
-            </div>
           </div>
 
           <div className="flex justify-end">
