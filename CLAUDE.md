@@ -30,7 +30,10 @@ The prototype is fully functional with the following stack:
 - Next.js 15 (App Router)
 - TypeScript
 - Tailwind CSS
-- Brand colors configured: #1e7094 (primary), #288f42 (secondary)
+- Brand colors configured: #fdfaff, #e4b9d7, #9a5ded, #15128f
+- Brand font: Rakkas
+
+Use the folder ./brand assets for logo
 
 ### Backend
 - Next.js API Routes

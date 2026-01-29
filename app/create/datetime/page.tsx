@@ -44,7 +44,7 @@ export default function CreateEventStep2() {
           <h1 className="text-3xl font-bold text-gray-900">Create Your Event</h1>
           <span className="text-sm text-gray-500">Step 2 of 4</span>
         </div>
-        <div className="w-full bg-gray-200 rounded-full h-2">
+        <div className="w-full bg-purple-100 rounded-full h-2">
           <div className="bg-primary h-2 rounded-full" style={{ width: '50%' }}></div>
         </div>
       </div>
@@ -89,7 +89,7 @@ export default function CreateEventStep2() {
             <button
               type="button"
               onClick={handleBack}
-              className="bg-gray-200 text-gray-700 px-6 py-3 rounded-md font-semibold hover:bg-gray-300 transition-colors"
+              className="bg-secondary text-gray-700 px-6 py-3 rounded-md font-semibold hover:bg-secondary-dark transition-colors"
             >
               Back
             </button>
