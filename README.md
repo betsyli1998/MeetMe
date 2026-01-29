@@ -4,20 +4,74 @@ Turn your vague event ideas into reality with AI assistance. MeetMe helps you pl
 
 ## Features
 
+### Core Event Planning
 - **AI-Powered Event Creation**: Enter a vague idea and let AI generate titles, descriptions, and itineraries
-- **Venue Suggestions**: Get contextual venue recommendations based on your event type and location
-- **GIPHY Integration**: Automatic event image selection from GIPHY
-- **Event Sharing**: Share events via link, email, or SMS
-- **RSVP Tracking**: Track guest responses and attendance
-- **Calendar Integration**: Download .ics files or add directly to Google Calendar
+- **Smart Venue Suggestions**: Get contextual venue recommendations based on your event type and location
+- **GIPHY Integration**: Browse and select event images from GIPHY's extensive library
+- **Event Sharing**: Share events via shareable link, email, or SMS
+- **RSVP Tracking**: Track guest responses and attendance in real-time
+- **Calendar Integration**: Download .ics files or add directly to Google Calendar with one click
+
+### UI/UX Enhancements
+- **Animated Suggestions**: Scrolling text animation showing event ideas on the creation page
+- **Google Places Autocomplete**: Real-time address suggestions as you type locations
+- **Enhanced Visual Design**: Modern purple gradient theme with polished animations
+- **Responsive Design**: Mobile-friendly interface that works across all devices
+- **Intuitive 4-Step Flow**: Simple wizard-style event creation process
+
+## Recent Updates (January 2026)
+
+### ✨ Enhanced UI/UX
+- **Scrolling Suggestions**: Added animated "I want to..." text carousel on event creation page with 5-color gradient
+- **Improved Typography**: Increased text sizes and enhanced readability across all pages
+- **Polished Animations**: Smoother transitions and gradient effects throughout the app
+
+### 🗺️ Google Places Integration
+- **Real-time Autocomplete**: Location input now features Google Places autocomplete with address suggestions
+- **Improved UX**: Faster, more accurate location entry for event venues
+
+### 🎨 Visual Refinements
+- **Brand Colors Updated**: New purple gradient theme (#9a5ded, #15128f, #e4b9d7, #fdfaff)
+- **Consistent Styling**: Unified color scheme across all pages (buttons, progress bars, inputs)
+- **Better Contrast**: Enhanced text and UI element visibility
+
+### 📅 Calendar Enhancements
+- **RSVP Calendar Integration**: Added Google Calendar and ICS download buttons on RSVP confirmation
+- **One-Click Add**: Quick actions to sync events to user's calendar
+
+### 🐛 Bug Fixes
+- Fixed Google Maps autocomplete race condition
+- Fixed gradient rendering issues on scrolling text
+- Fixed text alignment on Create Event page
+- Improved script loading reliability
 
 ## Tech Stack
 
-- **Frontend**: Next.js 15, TypeScript, Tailwind CSS
-- **Backend**: Next.js API Routes
-- **Storage**: In-memory JSON storage (file-based persistence)
-- **Authentication**: Simple mock authentication
-- **APIs**: GIPHY (optional), Mock AI service
+### Frontend
+- **Framework**: Next.js 16.1.6 (App Router)
+- **React**: Version 19.0.0
+- **Language**: TypeScript 5.7.3
+- **Styling**: Tailwind CSS 3.4.17 with custom animations
+- **UI Components**: Radix UI primitives (@radix-ui/react-*)
+- **Icons**: Lucide React
+- **Fonts**: Inter (headers), Rakkas (brand)
+
+### Backend
+- **API**: Next.js API Routes (Node.js runtime)
+- **Storage**: In-memory JSON with file persistence (`storage.json`)
+- **Authentication**: Mock session-based auth (HTTP-only cookies)
+
+### External APIs
+- **GIPHY API**: Real integration for event image selection (optional, falls back to mock)
+- **Google Maps Places API**: Real autocomplete for address input
+- **AI Service**: Mock AI (template-based, future: OpenAI/Gemini)
+- **Email/SMS**: Mock implementations (logs to console)
+
+### Key Libraries
+- `date-fns`: Date formatting and manipulation
+- `class-variance-authority`: Component variant styling
+- `tailwind-merge`: Tailwind class merging utility
+- `tailwindcss-animate`: Animation utilities
 
 ## Getting Started
 
@@ -38,13 +92,34 @@ cd MeetMe
 npm install
 ```
 
-3. (Optional) Set up GIPHY API key
-   - Get a free API key from [GIPHY Developers](https://developers.giphy.com/)
-   - Add it to `.env.local`:
-   ```
-   GIPHY_API_KEY=your_api_key_here
-   ```
-   - If no API key is provided, mock images will be used
+3. Set up environment variables
+
+Create a `.env.local` file in the root directory:
+
+```bash
+# GIPHY API Key (Get from https://developers.giphy.com/)
+# Leave empty to use mock data
+GIPHY_API_KEY=your_giphy_api_key_here
+
+# Google Maps API Key (Get from https://console.cloud.google.com/)
+# Required for Places Autocomplete on location input
+GOOGLE_MAPS_API_KEY=your_google_maps_api_key_here
+
+# Public API key for client-side Google Maps usage
+NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=your_google_maps_api_key_here
+
+# Application URL
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+```
+
+**API Setup Instructions:**
+- **GIPHY API**: Get a free key from [GIPHY Developers](https://developers.giphy.com/). If no key is provided, mock images will be used.
+- **Google Maps API**:
+  1. Go to [Google Cloud Console](https://console.cloud.google.com/)
+  2. Create a new project or select existing one
+  3. Enable "Maps JavaScript API" and "Places API"
+  4. Create credentials (API key)
+  5. Add the API key to both `GOOGLE_MAPS_API_KEY` and `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY`
 
 4. Run the development server
 ```bash
@@ -65,7 +140,9 @@ npm run dev
 1. **Login** with the demo credentials
 2. **Step 1**: Enter your event idea (e.g., "gothic birthday party")
 3. **Step 2**: Select date and time
-4. **Step 3**: Enter location or get AI venue suggestions
+4. **Step 3**: Enter location (with Google Places autocomplete) or get AI venue suggestions
+   - Start typing an address to see real-time suggestions
+   - Or click "Show me some venues!" for AI-powered recommendations
 5. **Step 4**: Review and edit AI-generated details
 6. **Create**: Click to create your event
 
@@ -135,13 +212,20 @@ meetme/
 - Data is persisted to `storage.json` file in development
 - Email and SMS invites are mocked (check browser console)
 - GIPHY integration requires an API key for real images
+- Google Maps API key is required for address autocomplete
 
 ## Brand Colors
 
-- Primary: #1e7094 (Blue)
-- Secondary: #288f42 (Green)
-- Background: #ffffff (White)
-- Text: #000000 (Black)
+The MeetMe brand uses a modern purple color palette:
+
+- **Lightest**: #fdfaff (Off-white background)
+- **Light Purple**: #e4b9d7 (Secondary accents)
+- **Primary Purple**: #9a5ded (Main brand color - buttons, gradients)
+- **Deep Purple**: #15128f (Headers, dark accents)
+
+### Typography
+- **Headers**: Inter font family (clean, professional)
+- **Brand Font**: Rakkas (used for logo and special branding elements)
 
 ## License
 
