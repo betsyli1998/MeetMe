@@ -9,14 +9,30 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['var(--font-inter)', 'sans-serif'],
+        display: ['var(--font-rakkas)', 'cursive'],
+      },
+      animation: {
+        'scroll-text': 'scroll-text 12s ease-in-out infinite',
+      },
+      keyframes: {
+        'scroll-text': {
+          '0%, 20%': { transform: 'translateY(0%)' },
+          '25%, 45%': { transform: 'translateY(-25%)' },
+          '50%, 70%': { transform: 'translateY(-50%)' },
+          '75%, 95%': { transform: 'translateY(-75%)' },
+          '100%': { transform: 'translateY(-100%)' },
+        },
+      },
       colors: {
         primary: {
-          DEFAULT: '#1e7094',
-          dark: '#165a75',
+          DEFAULT: '#9a5ded',
+          dark: '#7c48c4',
         },
         secondary: {
-          DEFAULT: '#288f42',
-          dark: '#1f7335',
+          DEFAULT: '#e4b9d7',
+          dark: '#d49bc4',
         },
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',

@@ -1,6 +1,7 @@
 import { getSession } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default async function Home() {
   const session = await getSession();
@@ -15,14 +16,41 @@ export default async function Home() {
       <div className="bg-gradient-to-br from-primary to-primary-dark text-white py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h1 className="text-5xl font-bold mb-6">
-              Turn Your Event Ideas Into Reality
-            </h1>
-            <p className="text-xl mb-8 max-w-2xl mx-auto">
+            <div className="flex justify-center mb-6">
+              <Image
+                src="/logo-transparent.png"
+                alt="MeetMe"
+                width={200}
+                height={80}
+                priority
+              />
+            </div>
+            <div className="text-center mb-6">
+              <h1 className="text-5xl font-bold mb-2">
+                <span className="block mb-2">I want to</span>
+                <div className="relative h-20 overflow-hidden">
+                  <div className="animate-scroll-text">
+                    <div className="h-20 flex items-center justify-center text-white">
+                      plan a gothic birthday party
+                    </div>
+                    <div className="h-20 flex items-center justify-center text-secondary">
+                      host a casual team event
+                    </div>
+                    <div className="h-20 flex items-center justify-center text-white">
+                      throw an elegant wedding
+                    </div>
+                    <div className="h-20 flex items-center justify-center text-secondary">
+                      organize a summer BBQ
+                    </div>
+                  </div>
+                </div>
+              </h1>
+            </div>
+            <p className="text-xl mb-8 max-w-2xl mx-auto animate-fade-in animation-delay-300">
               Have a vague idea for an event? Let our AI help you plan every detail.
               From venue suggestions to custom itineraries, we've got you covered.
             </p>
-            <p className="text-lg mb-12 italic">
+            <p className="text-lg mb-12 italic animate-fade-in animation-delay-500">
               "Let us create the event, so you can enjoy it"
             </p>
           </div>
@@ -30,11 +58,11 @@ export default async function Home() {
       </div>
 
       {/* Features Section */}
-      <div className="py-16 bg-white">
+      <div className="py-16 bg-background">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold text-center mb-12">How It Works</h2>
           <div className="grid md:grid-cols-4 gap-8">
-            <div className="text-center">
+            <div className="text-center animate-fade-in animation-delay-700">
               <div className="bg-primary text-white rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4 text-2xl font-bold">
                 1
               </div>
@@ -43,7 +71,7 @@ export default async function Home() {
                 Enter a vague event idea like "gothic birthday party"
               </p>
             </div>
-            <div className="text-center">
+            <div className="text-center animate-fade-in animation-delay-800">
               <div className="bg-primary text-white rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4 text-2xl font-bold">
                 2
               </div>
@@ -52,7 +80,7 @@ export default async function Home() {
                 Choose when and where, or get AI suggestions
               </p>
             </div>
-            <div className="text-center">
+            <div className="text-center animate-fade-in animation-delay-900">
               <div className="bg-secondary text-white rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4 text-2xl font-bold">
                 3
               </div>
@@ -61,7 +89,7 @@ export default async function Home() {
                 Get title, description, image, and itinerary
               </p>
             </div>
-            <div className="text-center">
+            <div className="text-center animate-fade-in animation-delay-1000">
               <div className="bg-secondary text-white rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4 text-2xl font-bold">
                 4
               </div>
@@ -75,7 +103,7 @@ export default async function Home() {
       </div>
 
       {/* Login Section */}
-      <div className="py-16 bg-gray-50">
+      <div className="py-16 bg-background">
         <div className="max-w-md mx-auto px-4">
           <div className="bg-white rounded-lg shadow-lg p-8">
             <h2 className="text-2xl font-bold mb-6 text-center">Get Started</h2>
@@ -113,7 +141,7 @@ export default async function Home() {
                 Sign In
               </button>
             </form>
-            <div className="mt-6 p-4 bg-blue-50 rounded-md">
+            <div className="mt-6 p-4 bg-purple-50 border border-purple-200 rounded-md">
               <p className="text-sm text-gray-700 text-center">
                 <strong>Demo Credentials:</strong>
                 <br />

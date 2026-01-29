@@ -3,7 +3,8 @@ import { ApiResponse, GiphyImage } from '@/types';
 
 export async function POST(request: NextRequest) {
   try {
-    const { query } = await request.json();
+    const body = await request.json();
+    const { query, limit = 12, offset = 0 } = body;
 
     if (!query) {
       return NextResponse.json({
@@ -39,10 +40,10 @@ export async function POST(request: NextRequest) {
       } as ApiResponse<GiphyImage[]>);
     }
 
-    // Call GIPHY API
+    // Call GIPHY API with pagination support
     const url = `https://api.giphy.com/v1/gifs/search?api_key=${apiKey}&q=${encodeURIComponent(
       query
-    )}&limit=3&rating=g`;
+    )}&limit=${limit}&offset=${offset}&rating=g`;
 
     const response = await fetch(url);
     const data = await response.json();

@@ -25,12 +25,13 @@ export default async function EventPage({ params }: { params: Promise<{ id: stri
       <div className="bg-white rounded-lg shadow-lg overflow-hidden">
         {/* Event Image */}
         {event.imageUrl && (
-          <div className="relative w-full h-80">
+          <div className="relative w-full max-h-[500px] rounded-lg overflow-hidden bg-gray-100">
             <Image
               src={event.imageUrl}
               alt={event.title}
-              fill
-              className="object-cover"
+              width={800}
+              height={450}
+              className="object-contain w-full h-auto max-h-[500px]"
               unoptimized
             />
           </div>
@@ -97,7 +98,7 @@ export default async function EventPage({ params }: { params: Promise<{ id: stri
           {event.itinerary && (
             <div className="mb-8">
               <h2 className="text-2xl font-semibold mb-3">Event Schedule</h2>
-              <div className="bg-gray-50 rounded-lg p-6">
+              <div className="bg-purple-50 rounded-lg p-6">
                 <pre className="text-gray-700 whitespace-pre-wrap font-sans">{event.itinerary}</pre>
               </div>
             </div>
@@ -109,7 +110,7 @@ export default async function EventPage({ params }: { params: Promise<{ id: stri
               Guests ({event.guestCount} attending)
             </h2>
             {attendees.length > 0 ? (
-              <div className="bg-gray-50 rounded-lg p-6">
+              <div className="bg-purple-50 rounded-lg p-6">
                 <ul className="space-y-2">
                   {attendees.map((rsvp) => (
                     <li key={rsvp.id} className="flex items-center gap-2 text-gray-700">

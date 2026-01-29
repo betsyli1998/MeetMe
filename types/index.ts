@@ -36,6 +36,9 @@ export interface VenueSuggestion {
   address: string;
   type: string;
   description: string;
+  placeId?: string; // Google Places ID for real venues
+  rating?: number; // Google Places rating (1-5)
+  photoUrl?: string; // Google Places photo URL
 }
 
 // RSVP types
@@ -91,4 +94,22 @@ export interface GiphyImage {
 
 export interface GiphySearchResponse {
   data: GiphyImage[];
+}
+
+// Rate limiting types
+export interface UsageRecord {
+  timestamp: number;
+  endpoint: string;
+}
+
+export interface RateLimitConfig {
+  maxRequests: number;
+  windowMs: number;
+  message?: string;
+}
+
+export interface RateLimitResult {
+  allowed: boolean;
+  remaining: number;
+  resetAt: number;
 }

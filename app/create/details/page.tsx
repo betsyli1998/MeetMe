@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import GiphySearchModal from './GiphySearchModal';
 
 export default function CreateEventStep4() {
   const router = useRouter();
@@ -13,19 +14,22 @@ export default function CreateEventStep4() {
   const [imageUrl, setImageUrl] = useState('');
   const [keepItinerary, setKeepItinerary] = useState(true);
   const [creating, setCreating] = useState(false);
+  const [showGiphyModal, setShowGiphyModal] = useState(false);
+  const [idea, setIdea] = useState('');
 
   useEffect(() => {
-    const idea = sessionStorage.getItem('eventIdea');
+    const eventIdea = sessionStorage.getItem('eventIdea');
     const date = sessionStorage.getItem('eventDate');
     const time = sessionStorage.getItem('eventTime');
     const location = sessionStorage.getItem('eventLocation');
 
-    if (!idea || !date || !time || !location) {
+    if (!eventIdea || !date || !time || !location) {
       router.push('/create');
       return;
     }
 
-    generateEventDetails(idea, date, time, location);
+    setIdea(eventIdea);
+    generateEventDetails(eventIdea, date, time, location);
   }, [router]);
 
   const generateEventDetails = async (
@@ -142,7 +146,7 @@ export default function CreateEventStep4() {
           <h1 className="text-3xl font-bold text-gray-900">Create Your Event</h1>
           <span className="text-sm text-gray-500">Step 4 of 4</span>
         </div>
-        <div className="w-full bg-gray-200 rounded-full h-2">
+        <div className="w-full bg-purple-100 rounded-full h-2">
           <div className="bg-primary h-2 rounded-full" style={{ width: '100%' }}></div>
         </div>
       </div>
@@ -158,15 +162,23 @@ export default function CreateEventStep4() {
           {imageUrl && (
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Event Image</label>
-              <div className="relative w-full h-64 rounded-lg overflow-hidden">
+              <div className="relative w-full max-h-96 rounded-lg overflow-hidden bg-gray-100">
                 <Image
                   src={imageUrl}
                   alt="Event"
-                  fill
-                  className="object-cover"
+                  width={600}
+                  height={400}
+                  className="object-contain w-full h-auto max-h-96"
                   unoptimized
                 />
               </div>
+              <button
+                type="button"
+                onClick={() => setShowGiphyModal(true)}
+                className="mt-2 text-primary hover:underline text-sm"
+              >
+                Change Image
+              </button>
             </div>
           )}
 
@@ -227,7 +239,7 @@ export default function CreateEventStep4() {
             )}
           </div>
 
-          <div className="bg-green-50 border border-green-200 rounded-md p-4">
+          <div className="bg-pink-50 border border-pink-200 rounded-md p-4">
             <p className="text-sm text-gray-700">
               <strong>What happens next?</strong> After creating your event, you'll be able to share
               it via link, email, or SMS, and track RSVPs from your guests.
@@ -238,7 +250,7 @@ export default function CreateEventStep4() {
             <button
               type="button"
               onClick={handleBack}
-              className="bg-gray-200 text-gray-700 px-6 py-3 rounded-md font-semibold hover:bg-gray-300 transition-colors"
+              className="bg-secondary text-gray-700 px-6 py-3 rounded-md font-semibold hover:bg-secondary-dark transition-colors"
             >
               Back
             </button>
@@ -251,6 +263,13 @@ export default function CreateEventStep4() {
             </button>
           </div>
         </form>
+
+        <GiphySearchModal
+          isOpen={showGiphyModal}
+          onClose={() => setShowGiphyModal(false)}
+          onSelectImage={(url) => setImageUrl(url)}
+          initialQuery={idea}
+        />
       </div>
     </div>
   );
