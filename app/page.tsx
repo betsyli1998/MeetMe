@@ -13,15 +13,15 @@ export default async function Home() {
   return (
     <div className="min-h-[calc(100vh-10rem)]">
       {/* Hero Section */}
-      <div className="bg-gradient-to-br from-primary to-primary-dark text-white py-20">
+      <div className="bg-gradient-to-br from-secondary to-secondary-dark text-gray-900 py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <div className="flex justify-center mb-6">
               <Image
                 src="/logo-transparent.png"
                 alt="MeetMe"
-                width={200}
-                height={80}
+                width={180}
+                height={72}
                 priority
               />
             </div>
@@ -30,27 +30,27 @@ export default async function Home() {
                 <span className="block mb-2">I want to</span>
                 <div className="relative h-20 overflow-hidden">
                   <div className="animate-scroll-text">
-                    <div className="h-20 flex items-center justify-center text-white">
+                    <div className="h-20 flex items-center justify-center text-primary">
                       plan a gothic birthday party
                     </div>
-                    <div className="h-20 flex items-center justify-center text-secondary">
+                    <div className="h-20 flex items-center justify-center text-primary-dark">
                       host a casual team event
                     </div>
-                    <div className="h-20 flex items-center justify-center text-white">
+                    <div className="h-20 flex items-center justify-center text-primary">
                       throw an elegant wedding
                     </div>
-                    <div className="h-20 flex items-center justify-center text-secondary">
+                    <div className="h-20 flex items-center justify-center text-primary-dark">
                       organize a summer BBQ
                     </div>
                   </div>
                 </div>
               </h1>
             </div>
-            <p className="text-xl mb-8 max-w-2xl mx-auto animate-fade-in animation-delay-300">
+            <p className="text-xl mb-8 max-w-2xl mx-auto animate-fade-in animation-delay-300 text-gray-800">
               Have a vague idea for an event? Let our AI help you plan every detail.
               From venue suggestions to custom itineraries, we've got you covered.
             </p>
-            <p className="text-lg mb-12 italic animate-fade-in animation-delay-500">
+            <p className="text-lg mb-12 italic animate-fade-in animation-delay-500 text-gray-700">
               "Let us create the event, so you can enjoy it"
             </p>
           </div>

@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Event } from '@/types';
 import { format, parse } from 'date-fns';
+import { generateICSFile, generateGoogleCalendarLink, downloadICSFile } from '@/lib/calendar';
 
 export default function RSVPPage() {
   const params = useParams();
@@ -65,6 +66,18 @@ export default function RSVPPage() {
     }
   };
 
+  const handleAddToGoogleCalendar = () => {
+    if (!event) return;
+    const url = generateGoogleCalendarLink(event);
+    window.open(url, '_blank');
+  };
+
+  const handleDownloadICS = () => {
+    if (!event) return;
+    const icsContent = generateICSFile(event);
+    downloadICSFile(icsContent, `${event.title}.ics`);
+  };
+
   if (!event) {
     return (
       <div className="max-w-3xl mx-auto px-4 py-12">
@@ -80,8 +93,8 @@ export default function RSVPPage() {
     return (
       <div className="max-w-3xl mx-auto px-4 py-12">
         <div className="bg-white rounded-lg shadow-lg p-12 text-center">
-          <div className="bg-green-100 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-6">
-            <svg className="w-12 h-12 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+          <div className="bg-pink-100 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-6">
+            <svg className="w-12 h-12 text-pink-500" fill="currentColor" viewBox="0 0 20 20">
               <path
                 fillRule="evenodd"
                 d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
@@ -92,17 +105,41 @@ export default function RSVPPage() {
           <h1 className="text-3xl font-bold text-gray-900 mb-4">
             {attending ? "You're Going!" : "Thanks for letting us know"}
           </h1>
-          <p className="text-gray-600 mb-8">
+          <p className="text-gray-700 mb-6">
             {attending
-              ? `Your RSVP has been recorded. We look forward to seeing you at ${event.title}!`
-              : "We're sorry you can't make it. Hope to see you at the next event!"}
+              ? `Thanks for RSVPing! We're excited to see you at ${event.title}. Add this event to your calendar below.`
+              : 'Thanks for letting us know. You can always change your RSVP later.'}
           </p>
-          <button
-            onClick={() => router.push(`/events/${id}`)}
-            className="bg-primary text-white px-8 py-3 rounded-md font-semibold hover:bg-primary-dark transition-colors"
-          >
-            View Event Details
-          </button>
+
+          {/* Calendar Action Buttons */}
+          <div className="space-y-3 w-full max-w-md mx-auto">
+            <button
+              onClick={handleAddToGoogleCalendar}
+              className="w-full bg-blue-600 text-white px-6 py-3 rounded-md font-semibold hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
+            >
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2z"/>
+              </svg>
+              Add to Google Calendar
+            </button>
+
+            <button
+              onClick={handleDownloadICS}
+              className="w-full bg-primary text-white px-6 py-3 rounded-md font-semibold hover:bg-primary-dark transition-colors flex items-center justify-center gap-2"
+            >
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
+              </svg>
+              Download Calendar File (.ics)
+            </button>
+
+            <button
+              onClick={() => router.push(`/events/${id}`)}
+              className="w-full bg-secondary text-gray-900 px-6 py-3 rounded-md font-semibold hover:bg-secondary-dark transition-colors"
+            >
+              View Event Details
+            </button>
+          </div>
         </div>
       </div>
     );
@@ -117,7 +154,7 @@ export default function RSVPPage() {
       <div className="bg-white rounded-lg shadow-lg p-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">RSVP to Event</h1>
-          <div className="bg-blue-50 border-l-4 border-primary p-4 mt-4">
+          <div className="bg-purple-50 border-l-4 border-primary p-4 mt-4">
             <h2 className="text-xl font-semibold text-gray-900 mb-2">{event.title}</h2>
             <p className="text-gray-700">
               <strong>Date:</strong> {formattedDate}
@@ -214,7 +251,7 @@ export default function RSVPPage() {
             <button
               type="button"
               onClick={() => router.push(`/events/${id}`)}
-              className="flex-1 bg-gray-200 text-gray-700 px-6 py-3 rounded-md font-semibold hover:bg-gray-300 transition-colors"
+              className="flex-1 bg-secondary text-gray-700 px-6 py-3 rounded-md font-semibold hover:bg-secondary-dark transition-colors"
             >
               Cancel
             </button>

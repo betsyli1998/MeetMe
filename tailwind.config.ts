@@ -32,7 +32,7 @@ const config: Config = {
         },
         secondary: {
           DEFAULT: '#e4b9d7',
-          dark: '#d49bc4',
+          dark: '#d4a0c5',
         },
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',

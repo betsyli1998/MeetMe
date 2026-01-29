@@ -29,7 +29,7 @@ export default function CreateEventStep1() {
           <h1 className="text-3xl font-bold text-gray-900">Create Your Event</h1>
           <span className="text-sm text-gray-500">Step 1 of 4</span>
         </div>
-        <div className="w-full bg-gray-200 rounded-full h-2">
+        <div className="w-full bg-purple-100 rounded-full h-2">
           <div className="bg-primary h-2 rounded-full" style={{ width: '25%' }}></div>
         </div>
       </div>
@@ -56,19 +56,30 @@ export default function CreateEventStep1() {
             />
           </div>
 
-          <div className="bg-blue-50 border border-blue-200 rounded-md p-4">
-            <p className="text-sm font-medium text-gray-700 mb-2">Need inspiration? Try these:</p>
-            <div className="flex flex-wrap gap-2">
-              {examples.map((example, index) => (
-                <button
-                  key={index}
-                  type="button"
-                  onClick={() => setIdea(example)}
-                  className="text-sm bg-white border border-gray-300 px-3 py-1 rounded-full hover:bg-gray-50 transition-colors"
-                >
-                  {example}
-                </button>
-              ))}
+          <div className="bg-purple-50 border border-purple-200 rounded-lg p-6 mb-4">
+            <div className="text-center">
+              <div className="text-lg text-gray-700 flex items-center justify-center gap-2">
+                <span className="font-medium">I want to</span>
+                <div className="relative h-8 w-80 overflow-hidden">
+                  <div className="animate-scroll-text">
+                    <div className="h-8 flex items-center text-primary font-semibold">
+                      host a galentines at a park
+                    </div>
+                    <div className="h-8 flex items-center text-primary font-semibold">
+                      throw a summer party
+                    </div>
+                    <div className="h-8 flex items-center text-primary font-semibold">
+                      host a board game night
+                    </div>
+                    <div className="h-8 flex items-center text-primary font-semibold">
+                      organize a birthday celebration
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <p className="text-sm text-gray-600 mt-3">
+                ✨ Type your idea above to get started
+              </p>
             </div>
           </div>
 

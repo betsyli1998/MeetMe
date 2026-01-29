@@ -5,6 +5,12 @@ import { useRouter } from 'next/navigation';
 import { VenueSuggestion } from '@/types';
 import Image from 'next/image';
 
+declare global {
+  interface Window {
+    google: any;
+  }
+}
+
 export default function CreateEventStep3() {
   const router = useRouter();
   const [location, setLocation] = useState('');
@@ -17,6 +23,7 @@ export default function CreateEventStep3() {
   const [idea, setIdea] = useState('');
   const [error, setError] = useState('');
   const [remaining, setRemaining] = useState<number | null>(null);
+  const [autocompleteService, setAutocompleteService] = useState<any>(null);
 
   useEffect(() => {
     const savedIdea = sessionStorage.getItem('eventIdea');
@@ -29,6 +36,43 @@ export default function CreateEventStep3() {
     }
     setIdea(savedIdea);
   }, [router]);
+
+  // Load Google Maps script
+  useEffect(() => {
+    const loadGoogleMaps = async () => {
+      if (typeof window === 'undefined') return;
+      if (window.google) return;
+
+      const script = document.createElement('script');
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places`;
+      script.async = true;
+      script.defer = true;
+      document.head.appendChild(script);
+    };
+    loadGoogleMaps();
+  }, []);
+
+  // Initialize Autocomplete
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    if (!window.google || autocompleteService) return;
+
+    const input = document.getElementById('location') as HTMLInputElement;
+    if (!input) return;
+
+    const autocomplete = new window.google.maps.places.Autocomplete(input, {
+      types: ['address'],
+    });
+
+    autocomplete.addListener('place_changed', () => {
+      const place = autocomplete.getPlace();
+      if (place.formatted_address) {
+        setLocation(place.formatted_address);
+      }
+    });
+
+    setAutocompleteService(autocomplete);
+  }, [autocompleteService]);
 
   const handleSearchPlaces = async () => {
     if (!searchQuery.trim() || !approximateLocation.trim()) return;
