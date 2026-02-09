@@ -1,156 +1,213 @@
-import { getSession } from '@/lib/auth';
-import { redirect } from 'next/navigation';
+'use client';
+
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
+import { Event } from '@/types';
 
-export default async function Home() {
-  const session = await getSession();
+export default function Home() {
+  const [events, setEvents] = useState<Event[]>([]);
+  const [loading, setLoading] = useState(true);
+  const searchParams = useSearchParams();
+  const sessionFilter = searchParams.get('session');
 
-  if (session) {
-    redirect('/create');
-  }
+  useEffect(() => {
+    fetchEvents();
+  }, [sessionFilter]);
+
+  const fetchEvents = async () => {
+    try {
+      const url = sessionFilter === 'mine' ? '/api/events?session=mine' : '/api/events';
+      const response = await fetch(url);
+      const data = await response.json();
+      if (data.success) {
+        setEvents(data.data);
+      }
+    } catch (error) {
+      console.error('Error fetching events:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  };
+
+  const truncateTitle = (title: string, maxLength: number = 60) => {
+    if (title.length <= maxLength) return title;
+    return title.substring(0, maxLength) + '...';
+  };
 
   return (
     <div className="min-h-[calc(100vh-10rem)]">
-      {/* Hero Section */}
-      <div className="bg-gradient-to-br from-secondary to-secondary-dark text-gray-900 py-24">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* Hero Section with Blob Gradient Animation */}
+      <div className="relative bg-gradient-to-br from-[#e4b9d7] via-[#9a5ded] to-[#15128f] text-white py-32 overflow-hidden">
+        {/* Nested container to ensure overflow containment */}
+        <div className="absolute inset-0 overflow-hidden">
+          {/* Blob Layer 1 - Large purple blob */}
+          <div className="absolute inset-0 opacity-40">
+            <div className="absolute blob blob-1"></div>
+          </div>
+
+          {/* Blob Layer 2 - Medium blue blob */}
+          <div className="absolute inset-0 opacity-30">
+            <div className="absolute blob blob-2"></div>
+          </div>
+
+          {/* Blob Layer 3 - Small pink blob */}
+          <div className="absolute inset-0 opacity-30">
+            <div className="absolute blob blob-3"></div>
+          </div>
+        </div>
+
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <div className="flex justify-center mb-6">
-              <Image
-                src="/logo-transparent.png"
-                alt="MeetMe"
-                width={180}
-                height={72}
-                priority
-              />
+            <h1 className="font-rakkas font-bold mb-2 text-white" style={{fontSize: '32px', lineHeight: '1.25'}}>
+              Turn Event Ideas into Real Events
+            </h1>
+            <p className="mb-8 max-w-2xl mx-auto text-white/95" style={{fontSize: '17px', lineHeight: '1.5'}}>
+              Automate your event planning so you can focus on the vibes.
+            </p>
+            <Link
+              href="/create"
+              className="inline-block bg-[#15128f] text-white px-10 py-5 rounded-lg font-bold hover:bg-[#0d0a5c] transition-colors shadow-2xl focus:outline-none focus:ring-4 focus:ring-white focus:ring-offset-4 focus:ring-offset-[#15128f]"
+              style={{fontSize: '16px'}}
+            >
+              Create Your Event →
+            </Link>
+            <p className="mt-4 text-white/90" style={{fontSize: '16px'}}>
+              No login required. Two minutes to create an event.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Section Divider */}
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#9a5ded] to-transparent opacity-30"></div>
+
+      {/* Events Grid */}
+      <div className="py-16 bg-background">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="font-bold mb-8 text-gray-900" style={{fontSize: '20px'}}>
+            {sessionFilter === 'mine' ? 'My Events' : 'Recent Events'}
+          </h2>
+
+          {loading ? (
+            <div className="text-center py-12">
+              <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-primary mx-auto mb-4"></div>
+              <p className="text-gray-600" style={{opacity: 0.85}}>Loading events...</p>
             </div>
-            <div className="text-center mb-6">
-              <h1 className="text-5xl font-bold mb-2">
-                <span className="block mb-2">I want to</span>
-                <div className="relative h-20 overflow-hidden">
-                  <div className="animate-scroll-text">
-                    <div className="h-20 flex items-center justify-center text-primary">
-                      plan a gothic birthday party
+          ) : events.length === 0 ? (
+            <div className="text-center py-12">
+              <p className="text-gray-600 text-lg mb-4" style={{opacity: 0.85}}>
+                {sessionFilter === 'mine'
+                  ? 'No events yet. Create your first one!'
+                  : 'No events yet. Create your first one!'}
+              </p>
+              <Link
+                href="/create"
+                className="inline-block bg-[#15128f] text-white px-6 py-3 rounded-md font-semibold hover:bg-[#0d0a5c] transition-colors focus:outline-none focus:ring-4 focus:ring-[#15128f] focus:ring-offset-2"
+              >
+                Create Event
+              </Link>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {events.map((event) => (
+                <Link
+                  key={event.id}
+                  href={`/events/${event.id}`}
+                  className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow focus:outline-none focus:ring-4 focus:ring-[#9a5ded] focus:ring-offset-2"
+                >
+                  {/* Event Image */}
+                  <div className="relative h-48 bg-gradient-to-br from-purple-100 to-pink-100">
+                    {event.imageUrl ? (
+                      <img
+                        src={event.imageUrl}
+                        alt={event.title}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-gray-400">
+                        <svg className="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                          />
+                        </svg>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Event Details */}
+                  <div className="p-4">
+                    <h3 className="text-xl font-semibold mb-2 text-gray-900">
+                      {truncateTitle(event.title)}
+                    </h3>
+                    <div className="space-y-2 text-sm" style={{color: 'rgb(75, 85, 99)', opacity: 0.90}}>
+                      <div className="flex items-center gap-2">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                          />
+                        </svg>
+                        <span>{formatDate(event.date)} at {event.time}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                          />
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                          />
+                        </svg>
+                        <span className="truncate">{event.location}</span>
+                      </div>
+                      {event.guestCount > 0 && (
+                        <div className="flex items-center gap-2">
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
+                            />
+                          </svg>
+                          <span>{event.guestCount} {event.guestCount === 1 ? 'guest' : 'guests'}</span>
+                        </div>
+                      )}
                     </div>
-                    <div className="h-20 flex items-center justify-center text-primary-dark">
-                      host a casual team event
-                    </div>
-                    <div className="h-20 flex items-center justify-center text-primary">
-                      throw an elegant wedding
-                    </div>
-                    <div className="h-20 flex items-center justify-center text-primary-dark">
-                      organize a summer BBQ
+                    <div className="mt-4 text-primary font-semibold flex items-center gap-1">
+                      View Details
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 5l7 7-7 7"
+                        />
+                      </svg>
                     </div>
                   </div>
-                </div>
-              </h1>
+                </Link>
+              ))}
             </div>
-            <p className="text-xl mb-8 max-w-2xl mx-auto animate-fade-in animation-delay-300 text-gray-800">
-              Have a vague idea for an event? Let our AI help you plan every detail.
-              From venue suggestions to custom itineraries, we've got you covered.
-            </p>
-            <p className="text-lg mb-12 italic animate-fade-in animation-delay-500 text-gray-700">
-              "Let us create the event, so you can enjoy it"
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* Features Section */}
-      <div className="py-16 bg-background">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-center mb-12">How It Works</h2>
-          <div className="grid md:grid-cols-4 gap-8">
-            <div className="text-center animate-fade-in animation-delay-700">
-              <div className="bg-primary text-white rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4 text-2xl font-bold">
-                1
-              </div>
-              <h3 className="font-semibold mb-2">Share Your Idea</h3>
-              <p className="text-gray-600 text-sm">
-                Enter a vague event idea like "gothic birthday party"
-              </p>
-            </div>
-            <div className="text-center animate-fade-in animation-delay-800">
-              <div className="bg-primary text-white rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4 text-2xl font-bold">
-                2
-              </div>
-              <h3 className="font-semibold mb-2">Pick Date & Location</h3>
-              <p className="text-gray-600 text-sm">
-                Choose when and where, or get AI suggestions
-              </p>
-            </div>
-            <div className="text-center animate-fade-in animation-delay-900">
-              <div className="bg-secondary text-white rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4 text-2xl font-bold">
-                3
-              </div>
-              <h3 className="font-semibold mb-2">AI Magic</h3>
-              <p className="text-gray-600 text-sm">
-                Get title, description, image, and itinerary
-              </p>
-            </div>
-            <div className="text-center animate-fade-in animation-delay-1000">
-              <div className="bg-secondary text-white rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4 text-2xl font-bold">
-                4
-              </div>
-              <h3 className="font-semibold mb-2">Share & Enjoy</h3>
-              <p className="text-gray-600 text-sm">
-                Invite guests and track RSVPs
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Login Section */}
-      <div className="py-16 bg-background">
-        <div className="max-w-md mx-auto px-4">
-          <div className="bg-white rounded-lg shadow-lg p-8">
-            <h2 className="text-2xl font-bold mb-6 text-center">Get Started</h2>
-            <form action="/api/auth/login" method="POST" className="space-y-4">
-              <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                  Email
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  required
-                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary focus:border-transparent"
-                  placeholder="demo@meetme.com"
-                />
-              </div>
-              <div>
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-                  Password
-                </label>
-                <input
-                  type="password"
-                  id="password"
-                  name="password"
-                  required
-                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary focus:border-transparent"
-                  placeholder="password123"
-                />
-              </div>
-              <button
-                type="submit"
-                className="w-full bg-primary text-white py-3 rounded-md font-semibold hover:bg-primary-dark transition-colors"
-              >
-                Sign In
-              </button>
-            </form>
-            <div className="mt-6 p-4 bg-purple-50 border border-purple-200 rounded-md">
-              <p className="text-sm text-gray-700 text-center">
-                <strong>Demo Credentials:</strong>
-                <br />
-                Email: demo@meetme.com
-                <br />
-                Password: password123
-              </p>
-            </div>
-          </div>
+          )}
         </div>
       </div>
     </div>
