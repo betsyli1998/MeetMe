@@ -53,7 +53,7 @@ export default function RootLayout({
                   Home
                 </Link>
                 <Link
-                  href="/?session=mine"
+                  href="/my-events"
                   className="text-white hover:text-gray-200 transition-colors font-medium focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-[#15128f] rounded-sm px-2 py-1"
                 >
                   My Events
@@ -62,8 +62,8 @@ export default function RootLayout({
             </div>
           </div>
         </nav>
-        <main className="min-h-screen bg-background">{children}</main>
-        <footer className="bg-[#15128f] text-white py-8 mt-12">
+        <main className="bg-background">{children}</main>
+        <footer className="bg-[#15128f] text-white py-8">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center space-y-4">
               <h3 className="text-lg font-semibold">MeetMe - AI-Powered Event Planning</h3>
