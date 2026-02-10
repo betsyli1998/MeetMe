@@ -47,3 +47,6 @@ next-env.d.ts
 # Storage
 /data
 storage.json
+
+# Documentation with sensitive examples
+VERCEL_ENV_VARS.md

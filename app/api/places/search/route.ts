@@ -1,18 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { requireAuth } from '@/lib/auth';
+import { getOrCreateSessionId } from '@/lib/session';
 import { getRateLimiter, RATE_LIMITS } from '@/lib/rate-limiter';
 import { ApiResponse, VenueSuggestion } from '@/types';
 
 export async function POST(request: NextRequest) {
   try {
-    // Authenticate user
-    const session = await requireAuth(request);
-    if (!session) {
-      return NextResponse.json(
-        { success: false, error: 'Unauthorized' },
-        { status: 401 }
-      );
-    }
+    // Get or create session for rate limiting
+    const sessionId = await getOrCreateSessionId();
 
     // Parse request body
     const body = await request.json();
@@ -28,7 +22,7 @@ export async function POST(request: NextRequest) {
     // Check rate limit BEFORE calling Google API
     const rateLimiter = getRateLimiter();
     const limitCheck = await rateLimiter.checkLimit(
-      session.userId,
+      sessionId,
       'google-places',
       RATE_LIMITS.GOOGLE_PLACES
     );
@@ -88,16 +82,16 @@ export async function POST(request: NextRequest) {
     }
 
     // Record usage AFTER successful call
-    await rateLimiter.recordUsage(session.userId, 'google-places');
+    await rateLimiter.recordUsage(sessionId, 'google-places');
 
     // Transform results to VenueSuggestion format
     const venues: VenueSuggestion[] = (data.places || []).map((place: any) => {
       // Get photo URL if available
       let photoUrl: string | undefined;
       if (place.photos && place.photos.length > 0) {
-        // New API format: use photo name to construct URL
+        // Use proxy endpoint to avoid exposing API key to client
         const photoName = place.photos[0].name;
-        photoUrl = `https://places.googleapis.com/v1/${photoName}/media?key=${apiKey}&maxWidthPx=400`;
+        photoUrl = `/api/places/photo?photoName=${encodeURIComponent(photoName)}&maxWidth=400`;
       }
 
       return {
@@ -113,7 +107,7 @@ export async function POST(request: NextRequest) {
 
     // Calculate remaining searches
     const newLimitCheck = await rateLimiter.checkLimit(
-      session.userId,
+      sessionId,
       'google-places',
       RATE_LIMITS.GOOGLE_PLACES
     );
