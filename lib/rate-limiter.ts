@@ -94,3 +94,87 @@ export const RATE_LIMITS = {
     message: 'Image search limit reached. Please try again in an hour.',
   },
 } as const;
+
+// ========== IP-Based Rate Limiting (Security Enhancement) ==========
+
+interface RateLimitEntry {
+  count: number;
+  resetTime: number;
+}
+
+const rateLimitStore = new Map<string, RateLimitEntry>();
+
+export function checkIPRateLimit(
+  ip: string,
+  maxRequests: number,
+  windowMs: number
+): { allowed: boolean; remaining: number; resetTime: number } {
+  const now = Date.now();
+  const entry = rateLimitStore.get(ip);
+
+  // Clean up expired entries
+  if (entry && now > entry.resetTime) {
+    rateLimitStore.delete(ip);
+  }
+
+  const current = rateLimitStore.get(ip);
+
+  if (!current) {
+    // First request from this IP
+    rateLimitStore.set(ip, {
+      count: 1,
+      resetTime: now + windowMs,
+    });
+    return {
+      allowed: true,
+      remaining: maxRequests - 1,
+      resetTime: now + windowMs,
+    };
+  }
+
+  if (current.count >= maxRequests) {
+    // Rate limit exceeded
+    return {
+      allowed: false,
+      remaining: 0,
+      resetTime: current.resetTime,
+    };
+  }
+
+  // Increment count
+  current.count++;
+  rateLimitStore.set(ip, current);
+
+  return {
+    allowed: true,
+    remaining: maxRequests - current.count,
+    resetTime: current.resetTime,
+  };
+}
+
+// Helper to get client IP from request
+export function getClientIP(request: Request): string {
+  // Check various headers for IP (handles proxies, CDNs)
+  const forwarded = request.headers.get('x-forwarded-for');
+  if (forwarded) {
+    return forwarded.split(',')[0].trim();
+  }
+
+  const realIP = request.headers.get('x-real-ip');
+  if (realIP) {
+    return realIP;
+  }
+
+  // Fallback to 'unknown' if no IP found
+  return 'unknown';
+}
+
+// Cleanup function to prevent memory leaks
+setInterval(() => {
+  const now = Date.now();
+  for (const [ip, entry] of rateLimitStore.entries()) {
+    if (now > entry.resetTime) {
+      rateLimitStore.delete(ip);
+    }
+  }
+}, 60000); // Clean up every minute
