@@ -3,6 +3,7 @@ import { Rakkas, Inter } from "next/font/google";
 import "./globals.css";
 import Link from "next/link";
 import Image from "next/image";
+import { Analytics } from "@vercel/analytics/next";
 
 const rakkas = Rakkas({
   weight: '400',
@@ -63,6 +64,7 @@ export default function RootLayout({
           </div>
         </nav>
         <main className="bg-background">{children}</main>
+        <Analytics />
         <footer className="bg-[#15128f] text-white py-8">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center space-y-4">
