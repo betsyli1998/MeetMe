@@ -8,13 +8,13 @@ The project goal is to create a website that allows people to enter an event ide
 
 ## Product Requirement Document 
 
-### Workflow  
-1. The user should be able to enter a vague idea (i.e., my gothic birthday party) to start planning. 
-2. The user should be able to select a date and time. 
-3. The user should be able to enter a location OR say in the prompt window like suggest something for me. If the user opts to get suggestions, ask necessary clarifying questions such as an approximate location (i.e., West LA) to get enough context to suggest a venue. If it's clear what the user wants, then suggest 1-2 venues that closely matchess the user's preference. 
-4. After a location is selected, the user should to a page that has the following: event title (automatically suggested based on previous context), event photo (use GIPHY API and suggest based on relevant context and also allow users to browse & replace), an event description (automatically suggested based on previous context), and an event itinerary (automatically suggested based on previous context, optional to keep). The user can edit these fields or create the event. 
-5. After the event is created, a couple options to share and invite guests should be available: link, SMS, email. A calendar invite should be downloadble or quick action to sync to Google Calendar. 
-6. When a guest rsvps, the event page gets updated with the guest names. 
+### Workflow
+1. **Step 1 - Event Idea & Creator Info**: The user enters their name, email, and a vague event idea (i.e., "my gothic birthday party"). This creates a session for the user (no authentication/login required - just basic info to track event ownership and allow sharing). The name and email are stored in sessionStorage for use throughout the event creation flow.
+2. **Step 2 - Date & Time**: The user selects a date and time for the event.
+3. **Step 3 - Location/Venue**: The user can either enter a specific location OR request suggestions by typing something like "suggest something for me". If the user opts to get suggestions, ask necessary clarifying questions such as an approximate location (i.e., West LA) to get enough context to suggest a venue. If it's clear what the user wants, then suggest 1-2 venues that closely match the user's preference.
+4. **Step 4 - AI-Generated Details**: After a location is selected, the user goes to a page that has the following: event title (automatically suggested based on previous context), event photo (use GIPHY API and suggest based on relevant context and also allow users to browse & replace), an event description (automatically suggested based on previous context), and an event itinerary (automatically suggested based on previous context, optional to keep). The user can edit these fields or create the event.
+5. **Sharing & Invites**: After the event is created, a couple options to share and invite guests should be available: link, SMS, email. A calendar invite should be downloadable or quick action to sync to Google Calendar.
+6. **RSVP Updates**: When a guest RSVPs, the event page gets updated with the guest names. 
 
 ## Designs, Styles, UX Guides
 The style of the brand should be modern and invokes a sense of trustworthiness centered around the idea of "letting the us (website) create the event so you can enjoy the event". 
@@ -44,11 +44,13 @@ Use the folder ./brand assets for logo
 - Data persisted to `storage.json` file
 - **Future**: Migrate to PostgreSQL with Prisma
 
-### Authentication
-- Simple mock authentication (`lib/auth.ts`)
-- Demo user: demo@meetme.com / password123
-- Session stored in HTTP-only cookies
-- **Future**: Implement NextAuth.js or Clerk
+### Session Management
+- **No authentication required** - Users provide name/email in Step 1 to create events
+- Session tracking via `lib/session.ts` and `lib/auth.ts`
+- Creator info (name, email) stored with each event for ownership verification
+- Session data stored in HTTP-only cookies
+- Demo login available at homepage: demo@meetme.com / password123 (for testing protected routes)
+- **Future**: Implement NextAuth.js or Clerk for full user accounts
 
 ### AI Service
 - Mock AI service (`lib/ai-service.ts`)
@@ -93,12 +95,14 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000
 ## Architecture Overview
 
 ### Data Flow
-1. **Authentication**: User logs in → Session cookie created → Protected routes accessible
+1. **Session Creation**: User enters name/email in Step 1 → Session cookie created → Creator info stored in sessionStorage
 2. **Event Creation**:
-   - Step 1-3: Store in `sessionStorage`
-   - Step 4: Call AI API → Call GIPHY API → Create event in storage
+   - Step 1: Collect name, email, event idea → Store in sessionStorage
+   - Step 2: Collect date/time → Store in sessionStorage
+   - Step 3: Collect location/venue → Store in sessionStorage
+   - Step 4: Call AI API → Call GIPHY API → Create event in storage with creator info
 3. **Event Display**: Fetch event + RSVPs from storage → Render
-4. **RSVP**: Public submission → Update storage → Refresh event guest count
+4. **RSVP**: Public submission (no auth required) → Update storage → Refresh event guest count
 
 ### Key Files
 
@@ -110,14 +114,14 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000
 - `types/index.ts` - TypeScript type definitions
 
 #### Pages (App Router)
-- `app/page.tsx` - Landing page with login
-- `app/create/page.tsx` - Step 1: Event idea input
+- `app/page.tsx` - Landing page (optional demo login available)
+- `app/create/page.tsx` - Step 1: Name, email, and event idea input (creates session)
 - `app/create/datetime/page.tsx` - Step 2: Date/time selection
 - `app/create/location/page.tsx` - Step 3: Location/venue selection
 - `app/create/details/page.tsx` - Step 4: AI-generated details editor
 - `app/events/[id]/page.tsx` - Event display page
 - `app/events/[id]/share/page.tsx` - Share and invite page
-- `app/events/[id]/rsvp/page.tsx` - RSVP form (public)
+- `app/events/[id]/rsvp/page.tsx` - RSVP form (public, no auth required)
 
 #### API Routes
 - `app/api/auth/login/route.ts` - Login endpoint
@@ -142,12 +146,16 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000
 
 ## Testing the Application
 
-1. **Login**: Use demo@meetme.com / password123
-2. **Create Event**: Follow 4-step wizard
-3. **View Event**: See all details, image, itinerary, guest list
-4. **Share**: Copy links, test calendar downloads
-5. **RSVP**: Open RSVP link (no auth required), submit response
-6. **Verify**: Check guest list updates on event page
+1. **Create Event**: Go to /create and follow the 4-step wizard (no login required)
+   - Step 1: Enter name, email, and event idea
+   - Step 2: Select date and time
+   - Step 3: Choose or get venue suggestions
+   - Step 4: Review AI-generated details and create event
+2. **View Event**: See all details, image, itinerary, guest list
+3. **Share**: Copy links, test calendar downloads
+4. **RSVP**: Open RSVP link (no auth required), submit response
+5. **Verify**: Check guest list updates on event page
+6. **Optional Demo Login**: Use demo@meetme.com / password123 at homepage for testing protected routes
 
 ## Known Limitations (Prototype)
 

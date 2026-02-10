@@ -44,7 +44,7 @@ export default function CreateEventStep1() {
 
           <div className="mb-6 flex flex-col gap-2">
             <div className="text-gray-700 flex items-center gap-3" style={{fontSize: '32px', lineHeight: '1.4'}}>
-              <span className="font-medium">I want to host ....</span>
+              <span className="font-medium">I want to host</span>
               <div className="relative h-10 w-96 overflow-hidden">
                 <div className="animate-scroll-text">
                   <div className="h-10 flex items-center font-semibold">
