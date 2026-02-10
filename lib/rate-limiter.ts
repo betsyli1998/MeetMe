@@ -110,11 +110,24 @@ export function checkIPRateLimit(
   windowMs: number
 ): { allowed: boolean; remaining: number; resetTime: number } {
   const now = Date.now();
-  const entry = rateLimitStore.get(ip);
 
-  // Clean up expired entries
+  // Lazy cleanup: Remove this IP's entry if expired
+  const entry = rateLimitStore.get(ip);
   if (entry && now > entry.resetTime) {
     rateLimitStore.delete(ip);
+  }
+
+  // Opportunistic cleanup: Remove expired entries for other IPs
+  // (Only clean a few entries per request to avoid performance hit)
+  if (rateLimitStore.size > 100) {
+    let cleaned = 0;
+    for (const [key, value] of rateLimitStore.entries()) {
+      if (now > value.resetTime) {
+        rateLimitStore.delete(key);
+        cleaned++;
+        if (cleaned >= 10) break; // Clean max 10 per request
+      }
+    }
   }
 
   const current = rateLimitStore.get(ip);
@@ -169,12 +182,5 @@ export function getClientIP(request: Request): string {
   return 'unknown';
 }
 
-// Cleanup function to prevent memory leaks
-setInterval(() => {
-  const now = Date.now();
-  for (const [ip, entry] of rateLimitStore.entries()) {
-    if (now > entry.resetTime) {
-      rateLimitStore.delete(ip);
-    }
-  }
-}, 60000); // Clean up every minute
+// Serverless-compatible cleanup: No setInterval needed
+// Cleanup happens lazily in checkIPRateLimit() during request processing

@@ -1,29 +1,18 @@
-import { User, Event, RSVP } from '@/types';
+import { Event, RSVP } from '@/types';
 import { readFileSync, writeFileSync, existsSync } from 'fs';
 import { join } from 'path';
 
 // In-memory storage with optional file persistence
+// No authentication - events are linked to browser sessions only
 class Storage {
-  private users: Map<string, User> = new Map();
   private events: Map<string, Event> = new Map();
   private rsvps: Map<string, RSVP[]> = new Map(); // eventId -> RSVP[]
   private storageFile = join(process.cwd(), 'storage.json');
 
   constructor() {
-    this.initializeMockData();
+    // No mock data needed - no authentication
     // TEMPORARILY DISABLED: File I/O causing blocking issues
     // this.loadFromFile();
-  }
-
-  private initializeMockData() {
-    // Add mock user
-    const mockUser: User = {
-      id: '1',
-      email: 'demo@meetme.com',
-      password: 'password123',
-      name: 'Demo User',
-    };
-    this.users.set(mockUser.id, mockUser);
   }
 
   private loadFromFile() {
@@ -58,15 +47,6 @@ class Storage {
     }
   }
 
-  // User methods
-  getUserByEmail(email: string): User | undefined {
-    return Array.from(this.users.values()).find(u => u.email === email);
-  }
-
-  getUserById(id: string): User | undefined {
-    return this.users.get(id);
-  }
-
   // Event methods
   createEvent(event: Event): Event {
     this.events.set(event.id, event);
@@ -79,8 +59,8 @@ class Storage {
     return this.events.get(id);
   }
 
-  getEventsByUserId(userId: string): Event[] {
-    return Array.from(this.events.values()).filter(e => e.userId === userId);
+  getEventsBySessionId(sessionId: string): Event[] {
+    return Array.from(this.events.values()).filter(e => e.sessionId === sessionId);
   }
 
   getAllEvents(): Event[] {
