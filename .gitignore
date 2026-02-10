@@ -50,3 +50,7 @@ storage.json
 
 # Documentation with sensitive examples
 VERCEL_ENV_VARS.md
+
+# Security documentation (keep private)
+SECURITY_AUDIT.md
+SECURITY_SUMMARY.md
