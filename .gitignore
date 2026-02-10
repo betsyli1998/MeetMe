@@ -54,3 +54,9 @@ VERCEL_ENV_VARS.md
 # Security documentation (keep private)
 SECURITY_AUDIT.md
 SECURITY_SUMMARY.md
+
+# Claude Code IDE settings (local only)
+.claude/
+
+# Windows shortcuts
+*.lnk
