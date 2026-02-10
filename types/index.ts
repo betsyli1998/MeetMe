@@ -7,15 +7,20 @@ export interface User {
 }
 
 export interface Session {
-  userId: string;
-  email: string;
-  name: string;
+  id?: string; // Session ID (for session.ts)
+  userId?: string; // User ID (for auth.ts)
+  email?: string; // User email (for auth.ts)
+  name?: string;
+  createdAt?: string; // Session creation timestamp (for session.ts)
 }
 
 // Event types
 export interface Event {
   id: string;
-  userId: string;
+  userId?: string; // Legacy field, sessionId is used instead
+  sessionId: string; // Session ID of creator (for ownership verification)
+  creatorName: string; // Name of event creator
+  creatorEmail: string; // Email of event creator
   idea: string; // Original event idea input
   title: string; // AI-generated or user-edited title
   description: string; // AI-generated or user-edited description
