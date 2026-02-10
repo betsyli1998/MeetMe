@@ -1,6 +1,7 @@
 import { AIEventSuggestion, VenueSuggestion } from '@/types';
+import { generateEventDetails, generateVenueSuggestions as geminiVenues } from './gemini-service';
 
-// Mock AI service that generates contextual event suggestions
+// AI service with Gemini integration and template fallback
 export class AIService {
   private static eventTitleTemplates = {
     birthday: [
@@ -59,7 +60,33 @@ export class AIService {
     ],
   };
 
-  static generateEventSuggestion(
+  static async generateEventSuggestion(
+    idea: string,
+    location: string,
+    date: string,
+    time: string
+  ): Promise<AIEventSuggestion> {
+    try {
+      // Try Gemini first
+      const datetime = `${date} at ${time}`;
+      const geminiResult = await generateEventDetails(idea, location, datetime);
+
+      // Transform Gemini response to match AIEventSuggestion format
+      return {
+        title: geminiResult.title,
+        description: geminiResult.description,
+        itinerary: geminiResult.itinerary
+          .map((item: any) => `${item.time} - ${item.activity}`)
+          .join('\n')
+      };
+    } catch (error) {
+      console.warn('Gemini generation failed, using template fallback:', error);
+      // Fall back to existing template logic
+      return this.generateEventSuggestionTemplate(idea, location, date, time);
+    }
+  }
+
+  private static generateEventSuggestionTemplate(
     idea: string,
     location: string,
     date: string,
@@ -126,7 +153,29 @@ export class AIService {
     return 'casual';
   }
 
-  static generateVenueSuggestions(
+  static async generateVenueSuggestions(
+    idea: string,
+    approximateLocation: string
+  ): Promise<VenueSuggestion[]> {
+    try {
+      // Try Gemini first
+      const geminiResult = await geminiVenues(idea, approximateLocation);
+
+      // Transform to VenueSuggestion format
+      return geminiResult.venues.map((v: any) => ({
+        name: v.name,
+        address: approximateLocation, // Generic address
+        type: v.type,
+        description: v.reason
+      }));
+    } catch (error) {
+      console.warn('Gemini venue generation failed, using template fallback:', error);
+      // Fall back to existing template logic
+      return this.generateVenueSuggestionsTemplate(idea, approximateLocation);
+    }
+  }
+
+  private static generateVenueSuggestionsTemplate(
     idea: string,
     approximateLocation: string
   ): VenueSuggestion[] {
